@@ -42,7 +42,7 @@ jobs:
       - name: Fuse Connector Source
         run: |
           cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm -r {} +
-          cp -R connector-src/* fused/
+          cp -R ../connector-src/* ./
 ##          cd fused/; git add ./*
 #      - name: Remove Extra Stuff
 #        run: |
