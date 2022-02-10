@@ -48,9 +48,9 @@ jobs:
       - name: Commit Fused Isolated Connector
         uses: EndBug/add-and-commit@v8
         with:
-          author_name: Testing
-          author_email: pinkforest@pinkforest.com
-          message: 'Testing'
+          author_name: Fluvio.io
+          author_email: no_spam@fluvio.io
+          message: 'Release'
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           add: '.'
           cwd: './fused/'
@@ -60,21 +60,21 @@ jobs:
       - name: Release 
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.event.inputs.name }}-${{ env.TAG_VERSION }}
+          tag: connect-${{ github.event.inputs.name }}-${{ env.TAG_VERSION }}
           draft: false
           prerelease: false
           commit: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           removeArtifacts: true
           allowUpdates: true
           generateReleaseNotes: true
-#          artifacts: "./release-src.tar"
+##          artifacts: "./release-src.tar"
           token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Upload Connector Source
+#      - name: Upload Connector Binaries..
 #        uses: actions/upload-release-asset@v1
 #        env:
 #          GITHUB_TOKEN: ${{ github.token }}
 #        with:
 #          upload_url: ${{ steps.create_release.outputs.upload_url }}
 #          asset_path: ./release-src.tar.gz
-#          asset_name: fluvio-connect-${{ github.event.inputs.name }}-src.tar.gz
+#          asset_name: fluvio-connect-${{ github.event.inputs.name }}-bin.tar.gz
 #          asset_content_type: application/gzip
