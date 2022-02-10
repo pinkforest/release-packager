@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: repo
-          repository: pinkforest/test-sub-release
+          repository: infinyon/fluvio-connectors
       - name: Set Environment ${{ github.event.inputs.name }}
         shell: bash
         run: |
