@@ -34,9 +34,6 @@ jobs:
       - name: Unlink Source Repo
         run: |
           rm -rf repo
-#      - name: Isolate Connector
-#        run: |
-#          tar -xvf release-src.tar 
       - name: Bring Base Repo
         uses: actions/checkout@v2
         with:
@@ -44,11 +41,14 @@ jobs:
           repository: pinkforest/release-packager
       - name: Fuse Connector Source
         run: |
+          cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm
           cp -R connector-src/* fused/
-#          cd fused/; git add ./*
+##          cd fused/; git add ./*
+#      - name: Remove Extra Stuff
+#        run: |
+#          cd fused/; git rm -r .github
       - name: Commit Fused Isolated Connector
         uses: EndBug/add-and-commit@v8
-        # cwd: './pathToRepo/' if reqd
         with:
           author_name: Testing
           author_email: pinkforest@pinkforest.com
