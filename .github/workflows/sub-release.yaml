@@ -67,7 +67,7 @@ jobs:
           removeArtifacts: true
           allowUpdates: true
           generateReleaseNotes: true
-          //artifacts: "./release-src.tar"
+#          artifacts: "./release-src.tar"
           token: ${{ secrets.GITHUB_TOKEN }}
 #      - name: Upload Connector Source
 #        uses: actions/upload-release-asset@v1
