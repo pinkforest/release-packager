@@ -36,7 +36,11 @@ jobs:
       - name: Isolate Connector
         run: |
           tar -xvf release-src.tar.gz 
-      - name: Commit Isolated Connector
+      - name: Bring Base Repo
+        uses: actions/checkout@v2
+        with:
+          repository: pinkforest/release-packager
+      - name: Fuse and Commit Isolated Connector
         uses: EndBug/add-and-commit@v8
         # cwd: './pathToRepo/' if reqd
         with:
