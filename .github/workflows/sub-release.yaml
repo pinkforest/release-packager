@@ -41,7 +41,7 @@ jobs:
           repository: pinkforest/release-packager
       - name: Fuse Connector Source
         run: |
-          cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm {} +
+          cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm -r {} +
           cp -R connector-src/* fused/
 ##          cd fused/; git add ./*
 #      - name: Remove Extra Stuff
