@@ -33,9 +33,10 @@ jobs:
       - name: Unlink Source Repo
         run: |
           rm -rf repo
-      - name: Package Isolated Connector
+      - name: Isolate Connector
+        run: |
           tar -xvf release-src.tar.gz 
-      - name: Commit changes
+      - name: Commit Isolated Connector
         uses: EndBug/add-and-commit@v8
         # cwd: './pathToRepo/' if reqd
         with:
