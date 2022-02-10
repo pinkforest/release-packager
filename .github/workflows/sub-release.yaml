@@ -44,7 +44,7 @@ jobs:
           cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm -r {} +
       - name: Fuse Connector Source
         run: |
-          cp -R ../connector-src/* ./
+          cp -R ./connector-src/* ./fused/
       - name: Commit Fused Isolated Connector
         uses: EndBug/add-and-commit@v8
         with:
