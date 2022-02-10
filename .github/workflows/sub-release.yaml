@@ -29,7 +29,21 @@ jobs:
           echo "TAG_VERSION = ${{ env.TAG_VERSION }}"
       - name: Tar
         run: |
-          tar --directory=repo/rust-connectors/sources/${{ github.event.inputs.name }} -zcvf release-src.tar.gz ./
+          tar --directory=repo/rust-connectors/sources/${{ github.event.inputs.name }} -cvf release-src.tar.gz ./
+      - name: Unlink Source Repo
+        run: |
+          rm -rf repo
+      - name: Package Isolated Connector
+          tar -xvf release-src.tar.gz 
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v8
+        # cwd: './pathToRepo/' if reqd
+        with:
+          author_name: Testing
+          author_email: pinkforest@pinkforest.com
+          message: 'Testing'
+          new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
+          add: '.*'
       - name: Ls
         run: |
           ls -laR ./
@@ -39,10 +53,11 @@ jobs:
           tag: v${{ env.TAG_VERSION }}-${{ github.event.inputs.name }}
           draft: false
           prerelease: false
+          commit: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           removeArtifacts: true
           allowUpdates: true
           generateReleaseNotes: true
-          artifacts: "./release-src.tar.gz"
+          artifacts: "./release-src.tar"
           token: ${{ secrets.GITHUB_TOKEN }}
 #      - name: Release
 #        uses: actions/create-release@v1
