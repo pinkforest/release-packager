@@ -45,6 +45,7 @@ jobs:
       - name: Fuse Connector Source
         run: |
           cp -R connector-src/* fused/
+#          cd fused/; git add ./*
       - name: Commit Fused Isolated Connector
         uses: EndBug/add-and-commit@v8
         # cwd: './pathToRepo/' if reqd
@@ -53,7 +54,7 @@ jobs:
           author_email: pinkforest@pinkforest.com
           message: 'Testing'
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
-          add: '.*'
+          add: '.'
           cwd: './fused/'
       - name: Ls
         run: |
