@@ -29,18 +29,23 @@ jobs:
           echo "TAG_VERSION = ${{ env.TAG_VERSION }}"
       - name: Tar
         run: |
-          tar --directory=repo/rust-connectors/sources/${{ github.event.inputs.name }} -cvf release-src.tar.gz ./
+          tar --directory=repo/rust-connectors/sources/${{ github.event.inputs.name }} -cvf release-src.tar ./
+          mkdir connector-src; tar --directory=connector-src -xvf release-src.tar
       - name: Unlink Source Repo
         run: |
           rm -rf repo
-      - name: Isolate Connector
-        run: |
-          tar -xvf release-src.tar.gz 
+#      - name: Isolate Connector
+#        run: |
+#          tar -xvf release-src.tar 
       - name: Bring Base Repo
         uses: actions/checkout@v2
         with:
+          path: fused
           repository: pinkforest/release-packager
-      - name: Fuse and Commit Isolated Connector
+      - name: Fuse Connector Source
+        run: |
+          cp -R connector-src/* fused/
+      - name: Commit Fused Isolated Connector
         uses: EndBug/add-and-commit@v8
         # cwd: './pathToRepo/' if reqd
         with:
@@ -49,6 +54,7 @@ jobs:
           message: 'Testing'
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           add: '.*'
+          cwd: './fused/'
       - name: Ls
         run: |
           ls -laR ./
