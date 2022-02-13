@@ -2,7 +2,7 @@
 #
 # LLVM Cross Compile For Alpine under Docker --platform
 #
-FROM --platform=$BUILDPLATFORM alpine:3.15.0
+FROM --platform=$BUILDPLATFORM alpine:3.15.0 AS build
 
 ##### Arguments via --build_arg
 # 
@@ -105,26 +105,26 @@ RUN /bin/ash -c 'set -ex && . ./build_llvm.sh && setup_environment && compile_ta
 # Multiarch - Emulated/Native Stage
 FROM alpine
 
-COPY --from=llvm-builder /local/deps /llvm
-COPY --from=llvm-builder /local/zig /zig
+COPY --from=build /llvm /llvm
+COPY --from=build /zig /zig
 
 RUN apk update && \
-    apk add gcc g++ openssl openssl-dev automake autoconf make pkgconfig cmake ninja binutils zlib-static libstdc++ python3-dev linux-virt-dev musl-dev linux-headers grep git"
+    apk add gcc g++ openssl openssl-dev automake autoconf make pkgconfig cmake ninja binutils zlib-static libstdc++ python3-dev linux-virt-dev musl-dev linux-headers grep git
 
-WORKDIR /src
-RUN git clone https://github.com/rui314/mold.git && cd mold && \
-    git checkout v1.0.3 && \
-    export PATH=/llvm/bin:/usr/local/bin:$PATH && \
-    export SYSTEM_MIMALLOC=1 && \
-    # version too old in alpine
-    # export SYSTEM_LIBTBB=1
-    export SYSTEM_XXHASH=1 && \
-    export CC=clang && \
-    export CXX=clang++ && \
-    export LTO=1 && \
-    make -j4 CXX=clang++ \
-     CXXFLAGS="-gcc-toolchain= -I/llvm/lib/clang/13.0.1/include -I/usr/include/c++/10.3.1 -I/usr/include/c++/10.3.1/`arch -m`-alpine-linux-musl" \
-     LDFLAGS="--ld-path=/llvm/bin/ld.lld -L/usr/lib/gcc/`arch -m`-alpine-linux-musl/10.3.1"
-
-     LDFLAGS="--ld-path=/usr/bin/ld -L/usr/lib/gcc/`arch -m`-alpine-linux-musl/10.3.1"
+#WORKDIR /src
+#RUN git clone https://github.com/rui314/mold.git && cd mold && \
+#    git checkout v1.0.3 && \
+#    export PATH=/llvm/bin:/usr/local/bin:$PATH && \
+#    export SYSTEM_MIMALLOC=1 && \
+#    # version too old in alpine
+#    # export SYSTEM_LIBTBB=1
+#    export SYSTEM_XXHASH=1 && \
+#    export CC=clang && \
+#    export CXX=clang++ && \
+#    export LTO=1 && \
+#    make -j4 CXX=clang++ \
+#     CXXFLAGS="-gcc-toolchain= -I/llvm/lib/clang/13.0.1/include -I/usr/include/c++/10.3.1 -I/usr/include/c++/10.3.1/`arch -m`-alpine-linux-musl" \
+#     LDFLAGS="--ld-path=/llvm/bin/ld.lld -L/usr/lib/gcc/`arch -m`-alpine-linux-musl/10.3.1"
+#
+#     LDFLAGS="--ld-path=/usr/bin/ld -L/usr/lib/gcc/`arch -m`-alpine-linux-musl/10.3.1"
 
