@@ -20,10 +20,12 @@ llvm_target_platform() {
         linux/amd64)
             echo CROSS_ARCH="X86" > /cross.env
             echo CROSS_TOOLCHAIN="x86_64-unknown-linux-musl" >> /cross.env
+	    echo CROSS_MUSL="x86_64-linux-musl" >> cross.env
             ;;
         linux/arm64)
             echo CROSS_ARCH="AArch64" > /cross.env
             echo CROSS_TOOLCHAIN="aarch64-unknown-linux-musl" >> /cross.env
+	    echo CROSS_MUSL="aarch64-linux-musl" >> cross.env
             ;;
         *)
             echo "We don't know this --platform ? $TARGETARCH"
@@ -58,8 +60,9 @@ zig_target_platform() {
 
 arch_env() {
 #  export $(echo $(cat .env | sed 's/#.*//g' | sed 's/\r//g' | xargs) | envsubst)
-  export CROSS_ARCH=$(grep -m 1 -oP 'CROSS_ARCH="*\K[^"]+' /cross.env)
-  export CROSS_TOOLCHAIN=$(grep -m 1 -oP 'CROSS_TOOLCHAIN="*\K[^"]+' /cross.env)
+    export CROSS_ARCH=$(grep -m 1 -oP 'CROSS_ARCH="*\K[^"]+' /cross.env)
+    export CROSS_MUSL=$(grep -m 1 -oP 'CROSS_MUSL="*\K[^"]+' /cross.env)
+    export CROSS_TOOLCHAIN=$(grep -m 1 -oP 'CROSS_TOOLCHAIN="*\K[^"]+' /cross.env)
 }
  
 
