@@ -12,6 +12,7 @@ compile_native "-DLLVM_ENABLE_LIBXML2=OFF -DLLVM_ENABLE_TERMINFO=OFF"
 
 if [ "$BUILDPLATFORM" == "$TARGETPLATFORM" ]; then
     # leave as-is
+    echo "Native build all done."
 else
     # For cross compile all we needed were the tblgens..
     # clang-tblgen & lldb-tblgen is not included in any packages :(
