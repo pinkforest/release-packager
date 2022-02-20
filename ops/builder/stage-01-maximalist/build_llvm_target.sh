@@ -108,6 +108,8 @@ compile_cross() {
      -Wno-dev $EXTRA_FLAGS \
      -G Ninja ../llvm-$LLVM_VERSION.src
 
+    ninja install
+    
     cp $SRC_DIR/build-cross/bin/*tblgen* $INSTALL_DIR/bin/
     
 }
