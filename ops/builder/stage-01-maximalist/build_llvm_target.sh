@@ -67,7 +67,7 @@ compile_native() {
 compile_cross() {
     export EXTRA_FLAGS="$2"
     
-    mkdir -p $SRC_DIR/build-native
+    mkdir -p $SRC_DIR/build-cross
     cd $SRC_DIR/build-cross
 
     # DCMAKE_SYSTEM_NAME="Linux"
