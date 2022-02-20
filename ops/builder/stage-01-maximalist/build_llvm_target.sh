@@ -105,7 +105,7 @@ compile_cross() {
      -DLLVM_BUILD_BENCHMARKS=OFF \
      -DLLDB_ENABLE_LUA=OFF \
      -DLLDB_ENABLE_PYTHON=OFF \
-     -Wno-dev \
+     -Wno-dev $EXTRA_FLAGS \
      -G Ninja ../llvm-$LLVM_VERSION.src
 
     cp $SRC_DIR/build-cross/bin/*tblgen* $INSTALL_DIR/bin/
