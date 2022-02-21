@@ -106,14 +106,15 @@ RUN /bin/ash -c "set -ex && source set_arch.sh && \
 #RUN /bin/ash -c 'set -ex && . ./build_llvm.sh && setup_environment && compile_target lldb'
 # Multiarch - Emulated/Native Stage
 
-FROM alpine
+FROM alpine:3.15.0
 
 COPY --from=build /llvm /llvm
 COPY --from=build /zig /zig
 #COPY --from=build /src /src
 
 RUN apk update && \
-    apk add gcc g++ openssl openssl-dev automake autoconf make pkgconfig cmake ninja binutils zlib-static libstdc++ python3-dev linux-virt-dev musl-dev linux-headers grep git
+    apk add gcc g++ openssl openssl-dev automake autoconf make pkgconfig cmake ninja samurai binutils zlib-static libstdc++ python3-dev linux-virt-dev musl-dev linux-headers grep git && \
+    apk upgrade
 
 #WORKDIR /src
 #RUN git clone https://github.com/rui314/mold.git && cd mold && \
