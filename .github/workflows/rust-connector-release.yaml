@@ -1,0 +1,86 @@
+name: "Connector Release"
+description: "Releases a Rust Connector"
+
+inputs:
+  workflow_dispatch:
+    name:
+      description: 'Rust Connector'
+      required: true
+      type: choice
+      options:
+        - http
+        - mqtt
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          path: repo
+          repository: infinyon/fluvio-connectors
+      - name: Set Environment ${{ github.event.inputs.name }}
+        shell: bash
+        run: |
+          echo "TAG_VERSION=`grep -m 1 -oP 'version\s*=\s*\"\K\d+\.\d+\.\d+(?=\")' repo/rust-connectors/sources/${{ github.event.inputs.name }}/Cargo.toml`" | tee -a $GITHUB_ENV
+      - name: Print Environment
+        run: |
+          echo "TAG_VERSION = ${{ env.TAG_VERSION }}"
+      - name: Tar
+        run: |
+          tar --directory=repo/rust-connectors/sources/${{ github.event.inputs.name }} -cvf release-src.tar ./
+          mkdir connector-src; tar --directory=connector-src -xvf release-src.tar
+      - name: Unlink Source Repo
+        run: |
+          rm -rf repo
+      - name: Bring Release Base Repo
+        uses: actions/checkout@v2
+        with:
+          path: fused
+          repository: pinkforest/release-packager
+      - name: Prepare Release Base Repo
+        run: |
+          cd fused/;find -not -path "./.git/*" -not -name ".git" -exec git rm -r {} +
+      - name: Fuse Connector Source
+        run: |
+          cp -R ./connector-src/* ./fused/
+      - name: Commit Fused Isolated Connector
+        uses: EndBug/add-and-commit@v8
+        with:
+          author_name: Fluvio.io
+          author_email: no_spam@fluvio.io
+          message: 'Release'
+          new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
+          add: '.'
+          cwd: './fused/'
+      - name: Ls
+        run: |
+          ls -laR ./
+      - name: Builder
+        uses: pinkforest/release-builder@v1
+        with:
+          name: ${{ github.event.inputs.name }}
+          serial: release-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
+      - name: Release 
+        uses: ncipollo/release-action@v1
+        id: create_release
+        with:
+          tag: connect-${{ github.event.inputs.name }}-${{ env.TAG_VERSION }}
+          draft: false
+          prerelease: false
+          commit: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
+          removeArtifacts: true
+          allowUpdates: true
+          generateReleaseNotes: true
+##          artifacts: "./release-src.tar"
+          token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Upload Connector Binaries..
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./release-src.tar.gz
+#          asset_name: fluvio-connect-${{ github.event.inputs.name }}-bin.tar.gz
+#          asset_content_type: application/gzip
