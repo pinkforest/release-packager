@@ -73,14 +73,16 @@ jobs:
       - name: Ls CWD
         run: |
           ls -laR ./
-      - name: Login GH CLI
-        run: cd fused ; gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})          
-      - name: Download Build artifacts
+#      - name: Login GH CLI
+#        run: cd fused ; gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})          
+#      - name: Download Build artifacts
+#        run: |
+#          cd fused && gh run download ${{ github.run_id }}
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
+      - name: Ls CWD
         run: |
-          cd fused && gh run download ${{ github.run_id }}
-      - name: Ls
-        run: |
-          ls -laR /
+          ls -laR ./
       - name: Release 
         uses: ncipollo/release-action@v1
         id: create_release
