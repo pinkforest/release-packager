@@ -74,7 +74,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           run_id: ${{ github.run_id }}
-          workflow: pinkforest/release-builder/.github/workflows/rust-builder.yml
+          workflow: rust-connector-release.yaml
       - name: Ls
         run: |
           ls -laR ./
