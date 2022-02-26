@@ -87,7 +87,9 @@ jobs:
           ls -laR ./
       - name: Normalise binary names for Release artifacts
         run: |
-          cd binaries ; find . -type f -name ${{ github.event.inputs.name }} -exec rename -n 's/\/.+/.bin/' '{}' \;          
+          cd binaries
+          export CNAME=${{ github.event.inputs.name }}
+          find . -type f -name $CNAME -exec echo '{}' \; | grep -oP './\K.+(?=\/)' | xargs -d $'\n' sh -c 'for arg do mv "$arg/$CNAME" "$arg.bin"; rm -r "$arg"; done' _
       - name: Release 
         uses: ncipollo/release-action@v1
         id: create_release
