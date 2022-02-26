@@ -70,13 +70,17 @@ jobs:
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           add: '.'
           cwd: './fused/'
+      - name: Login GH CLI
+        run: gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})          
       - name: Download Build artifacts
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          run_id: ${{ github.run_id }}
-          workflow: rust-connector-release.yaml
- # workflow: ".github/workflows/rust-connector-release.yaml"
-          workflow_conclusion: in_progress
+        run: |
+          gh run download ${{ github.run_id }}
+#      - name: Download Build artifacts
+#        uses: dawidd6/action-download-artifact@v2
+#        with:
+#          run_id: ${{ github.run_id }}
+#          workflow: rust-connector-release.yaml
+#          workflow_conclusion: in_progress
       - name: Ls
         run: |
           ls -laR ./
