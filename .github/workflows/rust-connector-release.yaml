@@ -28,6 +28,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker-build
     steps:
+      #############################################################
+      # Build a clean source release artefact by:
+      #
+      # 1) Checkout the source from fluvio-connectors
+      # 2) Figure out the to-be-released version from Cargo.toml
+      # 3) Isolate the connector release source into a clean branch
+      # 4) Roll the release from the 3) branch and include the built binary artifacts
+      #
       - name: Checkout Connectors repository
         uses: actions/checkout@v2
         with:
@@ -67,17 +75,40 @@ jobs:
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           add: '.'
           cwd: './fused/'
+      ###################################################
+      # Pull all the previously built worflow artifacts
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
         with:
           path: binaries
       - name: LS
         run: ls -laR ./
-      - name: Normalise binary names for Release artifacts
+      #################################################################################################
+      # Normalise Docker Tar artifacts into release artifacts in ./binaries without hardcoding triples
+      # infinyon-fluvio-connector-http-aarch64-unknown-linux-musl.tar lives under same directory name
+      - name: Normalise Docker tarball names for Release artifacts
+        run: |
+          cd binaries
+          function rename_docker_tar() {
+            DOCKER_PATH=$1
+            mv "${DOCKER_PATH}" "${DOCKER_PATH}.tmp" ; mv "${DOCKER_PATH}.tmp/${DOCKER_PATH}" ./ ; rm -r "${DOCKER_PATH}.tmp"
+          }
+          export -f rename_docker_tar
+          find . -type f -name infinyon-fluvio-connector-\*.tar -exec echo '{}' \; | grep -oP './\K.+(?=\/)' | xargs -d'\n' bash -c 'rename_docker_tar "$@"' _
+      ###################################################################################################
+      # Normalise Connector bartifacts into release artifacts in ./binaries without hardcoding triples
+      # http-x86_64-unknown-linux-musl/http -> http-x86_64-unknown-linux-musl.bin
+      - name: Normalise Connector binary names for Release artifacts
         run: |
           cd binaries
           export CNAME=${{ github.event.inputs.name }}
           find . -type f -name $CNAME -exec echo '{}' \; | grep -oP './\K.+(?=\/)' | xargs -d $'\n' sh -c 'for arg do mv "$arg/$CNAME" "$arg.bin"; rm -r "$arg"; done' _
+      ###################################
+      # Bundle the final release out
+      #
+      # - Connector release branch (via commit) is the clean isolated source
+      # - ./binaries contain all the binaries
+      #
       - name: Release 
         uses: ncipollo/release-action@v1
         id: create_release
