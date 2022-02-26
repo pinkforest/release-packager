@@ -15,7 +15,7 @@ jobs:
   # BUG: https://github.community/t/reusable-workflow-env-context-not-available-in-jobs-job-id-with/206111/13
   set-vars:
     outputs:
-      run_id: ${{ env.GITHUB_RUN_ID }}
+      run_id: ${{ github.run_id }}
     runs-on: ubuntu-latest
     steps:
       - run: exit 0
@@ -73,7 +73,7 @@ jobs:
       - name: Download Build artifacts
         uses: dawidd6/action-download-artifact@v2
         with:
-          run_id: $${ github.run_id }
+          run_id: ${{ github.run_id }}
           workflow: pinkforest/release-builder/.github/workflows/rust-builder.yml
       - name: Ls
         run: |
