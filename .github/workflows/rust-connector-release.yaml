@@ -13,21 +13,21 @@ on:
 
 jobs:
   # BUG: https://github.community/t/reusable-workflow-env-context-not-available-in-jobs-job-id-with/206111/13
-  set-vars:
+  set-vars-${{ github.event.inputs.name }}:
     outputs:
       run_id: ${{ github.run_id }}
     runs-on: ubuntu-latest
     steps:
       - run: exit 0
       
-  build:
+  build-${{ github.event.inputs.name }}:
     uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
     needs: set-vars
     with:
       name: ${{ github.event.inputs.name }}
 #      serial: "release"
       
-  release:
+  release-${{ github.event.inputs.name }}:
     runs-on: ubuntu-latest
     needs: build
     steps:
