@@ -12,6 +12,12 @@ on:
           - mqtt
 
 jobs:
+  build:
+    - uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
+      with:
+        name: ${{ github.event.inputs.name }}
+        serial: release-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
+        
   release:
     runs-on: ubuntu-latest
     steps:
@@ -57,10 +63,6 @@ jobs:
       - name: Ls
         run: |
           ls -laR ./
-      - uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
-        with:
-          name: ${{ github.event.inputs.name }}
-          serial: release-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
       - name: Release 
         uses: ncipollo/release-action@v1
         id: create_release
