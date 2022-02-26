@@ -58,7 +58,7 @@ jobs:
         run: |
           ls -laR ./
       - name: Builder
-        uses: actions/release-builder@v1
+        uses: pinkforest/release-builder@v1
         with:
           name: ${{ github.event.inputs.name }}
           serial: release-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
