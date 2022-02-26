@@ -16,7 +16,7 @@ jobs:
     uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
     with:
       name: ${{ github.event.inputs.name }}
-      serial: release-${{ github.event.inputs.name }}-v${{ env.GITHUB_RUN_ID }}
+      serial: "release-${{ github.event.inputs.name }}-v${{ env.GITHUB_RUN_ID }}"
         
   release:
     runs-on: ubuntu-latest
