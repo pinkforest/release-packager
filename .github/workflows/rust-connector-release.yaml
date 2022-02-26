@@ -1,15 +1,16 @@
 name: "Connector Release"
 description: "Releases a Rust Connector"
 
-inputs:
+on:
   workflow_dispatch:
-    name:
-      description: 'Rust Connector'
-      required: true
-      type: choice
-      options:
-        - http
-        - mqtt
+    inputs:
+      name:
+        description: 'Rust Connector'
+        required: true
+        type: choice
+        options:
+          - http
+          - mqtt
 
 jobs:
   release:
