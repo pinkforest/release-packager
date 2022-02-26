@@ -25,7 +25,7 @@ jobs:
     needs: set-vars
     with:
       name: ${{ github.event.inputs.name }}
-      serial: "release-${{ github.event.inputs.name }}-v${{ needs.set-vars.run_id }}"
+      serial: "release-${{ github.event.inputs.name }}-v${{ github.run_id }}"
       
   release:
     runs-on: ubuntu-latest
@@ -70,20 +70,17 @@ jobs:
           new_branch: fluvio-connect-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
           add: '.'
           cwd: './fused/'
-      - name: Login GH CLI
-        run: gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})          
-      - name: Download Build artifacts
-        run: |
-          gh run download ${{ github.run_id }}
-#      - name: Download Build artifacts
-#        uses: dawidd6/action-download-artifact@v2
-#        with:
-#          run_id: ${{ github.run_id }}
-#          workflow: rust-connector-release.yaml
-#          workflow_conclusion: in_progress
-      - name: Ls
+      - name: Ls CWD
         run: |
           ls -laR ./
+      - name: Login GH CLI
+        run: cd fused ; gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})          
+      - name: Download Build artifacts
+        run: |
+          cd fused && gh run download ${{ github.run_id }}
+      - name: Ls
+        run: |
+          ls -laR /
       - name: Release 
         uses: ncipollo/release-action@v1
         id: create_release
