@@ -94,7 +94,7 @@ jobs:
             mv "${DOCKER_PATH}" "${DOCKER_PATH}.tmp" ; mv "${DOCKER_PATH}.tmp/${DOCKER_PATH}" ./ ; rm -r "${DOCKER_PATH}.tmp"
           }
           export -f rename_docker_tar
-          find . -type f -name infinyon-fluvio-connector-\*.tar -exec echo '{}' \; | grep -oP './\K.+(?=\/)' | xargs -d'\n' bash -c 'rename_docker_tar "$@"' _
+          find . -type f -name infinyon-fluvio-connector-\*.tar -exec echo '{}' \; | grep -oP './\K.+(?=\/)' | xargs -d $'\n' bash -c 'for arg do rename_docker_tar "$arg"; done' _
       ###################################################################################################
       # Normalise Connector bartifacts into release artifacts in ./binaries without hardcoding triples
       # http-x86_64-unknown-linux-musl/http -> http-x86_64-unknown-linux-musl.bin
