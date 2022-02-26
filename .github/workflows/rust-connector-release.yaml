@@ -57,8 +57,7 @@ jobs:
       - name: Ls
         run: |
           ls -laR ./
-      - name: Builder
-        uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
+      - uses: pinkforest/release-builder/.github/workflows/rust-builder.yml@main
         with:
           name: ${{ github.event.inputs.name }}
           serial: release-${{ github.event.inputs.name }}-v${{ env.TAG_VERSION }}
