@@ -25,7 +25,7 @@ jobs:
     needs: set-vars
     with:
       name: ${{ github.event.inputs.name }}
-      serial: "release-${{ github.event.inputs.name }}-v${{ github.run_id }}"
+#      serial: "release"
       
   release:
     runs-on: ubuntu-latest
@@ -80,6 +80,8 @@ jobs:
 #          cd fused && gh run download ${{ github.run_id }}
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
+        with:
+          path: binaries
       - name: Ls CWD
         run: |
           ls -laR ./
@@ -94,7 +96,7 @@ jobs:
           removeArtifacts: true
           allowUpdates: true
           generateReleaseNotes: true
-##          artifacts: "./release-src.tar"
+          artifacts: "./binaries/*"
           token: ${{ secrets.GITHUB_TOKEN }}
 #      - name: Upload Connector Binaries..
 #        uses: actions/upload-release-asset@v1
