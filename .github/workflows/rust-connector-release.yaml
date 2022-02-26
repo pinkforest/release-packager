@@ -72,7 +72,7 @@ jobs:
         with:
           path: binaries
       - name: LS
-        run: ls -laR /
+        run: ls -laR ./
       - name: Normalise binary names for Release artifacts
         run: |
           cd binaries
