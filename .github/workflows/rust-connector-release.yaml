@@ -74,7 +74,9 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           run_id: ${{ github.run_id }}
-          workflow: ".github/workflows/rust-connector-release.yaml"
+          workflow: rust-connector-release.yaml
+ # workflow: ".github/workflows/rust-connector-release.yaml"
+          workflow_conclusion: in_progress
       - name: Ls
         run: |
           ls -laR ./
