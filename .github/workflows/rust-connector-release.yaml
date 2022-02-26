@@ -1,5 +1,4 @@
 name: "Connector Release"
-description: "Releases a Rust Connector"
 
 on:
   workflow_dispatch:
